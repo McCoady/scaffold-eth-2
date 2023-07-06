@@ -17,14 +17,11 @@ async function main() {
   const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
   // Get account from private key.
   const wallet = new Wallet(privateKey, provider);
-  const address = wallet.address;
-
-  console.log(address);
 
   const balloonsAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
   const dexOneAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
   const dexTwoAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
-  const arbBotAddress = "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB";
+  const arbBotAddress = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9";
 
   const balloonsContract = new ethers.Contract(balloonsAddress, balloonsAbi.abi, wallet);
 
@@ -33,9 +30,6 @@ async function main() {
   const dexTwoContract = new ethers.Contract(dexTwoAddress, dexTwoAbi.abi, wallet);
 
   const arbBotContract = new ethers.Contract(arbBotAddress, arbBotAbi.abi, wallet);
-
-  const addressBalance = await balloonsContract.balanceOf(address);
-  console.log(ethers.utils.formatEther(addressBalance));
 
   console.log("Eth sent to Arb bot", ethers.utils.formatEther(await arbBotContract.totalEthIn()));
   console.log("Arb bot funds", ethers.utils.formatEther(await provider.getBalance(arbBotAddress)));
@@ -56,30 +50,35 @@ async function main() {
       dexTwoEthBalance,
       dexTwoTokenBalance,
     );
-    console.log("Current dex one price for 1 eth", ethers.utils.formatEther(dexOneEthPrice));
-    console.log("Current dex two price for 1 eth", ethers.utils.formatEther(dexTwoEthPrice));
+    console.log(
+      `Dex One Price ${ethers.utils.formatEther(dexOneEthPrice)}. Dex Two Price ${ethers.utils.formatEther(
+        dexTwoEthPrice,
+      )}`,
+    );
 
     const cheapest = dexOneEthPrice > dexTwoEthPrice ? 0 : 1;
 
     if (cheapest === 0) {
-      console.log("trying dex two");
       try {
         await arbBotContract.tryArb(dexTwoAddress, dexOneAddress, {
-          value: ethers.utils.parseEther("10"),
+          value: ethers.utils.parseEther("2.5"),
           maxPriorityFeePerGas: "2",
         });
+        const ethToBot = ethers.utils.formatEther(await arbBotContract.totalEthIn());
+        const ethInBot = ethers.utils.formatEther(await provider.getBalance(arbBotAddress));
+        console.log(`Eth sent to bot: ${ethToBot}, Eth current in bot: ${ethInBot}`);
+        console.log("---");
       } catch {
-        console.log("Slippage Error");
+        console.log("No arb this block");
       }
     } else {
-      console.log("trying dex one");
       try {
         await arbBotContract.tryArb(dexOneAddress, dexTwoAddress, {
-          value: ethers.utils.parseEther("10"),
+          value: ethers.utils.parseEther("2.5"),
           maxPriorityFeePerGas: "2",
         });
       } catch {
-        console.log("Slippage Error");
+        console.log("No arb this block");
       }
     }
   }

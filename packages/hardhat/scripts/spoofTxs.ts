@@ -74,7 +74,7 @@ async function main() {
         console.log("amount", ethers.utils.formatEther(amount));
         console.log("ethBack", ethers.utils.formatEther(minEth));
         try {
-          tx = await dexOneContract.tokenToEth(amount, minEth);
+          await dexOneContract.tokenToEth(amount, minEth);
         } catch {
           console.log("Slippage Error");
         }
@@ -91,7 +91,7 @@ async function main() {
         console.log("amount", ethers.utils.formatEther(amount));
         console.log("tokensBack", ethers.utils.formatEther(minTokens));
         try {
-          tx = await dexTwoContract.ethToToken(minTokens, { value: amount });
+          await dexTwoContract.ethToToken(minTokens, { value: amount });
         } catch {
           console.log("Slippage Error");
         }

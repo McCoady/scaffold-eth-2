@@ -30,7 +30,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
     autoMine: true,
   });
 
-  const balloons = await ethers.getContract("Balloons", deployer);
+  const balloons = await hre.ethers.getContract("Balloons", deployer);
 
   await deploy("DexOne", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
@@ -40,7 +40,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
     autoMine: true,
   });
 
-  const dexOne = await ethers.getContract("DexOne", deployer);
+  const dexOne = await hre.ethers.getContract("DexOne", deployer);
 
   await deploy("DexTwo", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
@@ -50,7 +50,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
     autoMine: true,
   });
 
-  const dexTwo = await ethers.getContract("DexTwo", deployer);
+  const dexTwo = await hre.ethers.getContract("DexTwo", deployer);
 
   await deploy("ArbBot", {
     from: deployer,
