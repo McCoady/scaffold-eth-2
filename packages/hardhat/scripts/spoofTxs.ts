@@ -23,9 +23,6 @@ async function main() {
   const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
   // Get account from private key.
   const wallet = new Wallet(privateKey, provider);
-  const address = wallet.address;
-
-  console.log(address);
 
   const balloonsAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
   const dexOneAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
@@ -36,9 +33,6 @@ async function main() {
   const dexOneContract = new ethers.Contract(dexOneAddress, dexOneAbi.abi, wallet);
 
   const dexTwoContract = new ethers.Contract(dexTwoAddress, dexTwoAbi.abi, wallet);
-
-  const addressBalance = await balloonsContract.balanceOf(address);
-  console.log(ethers.utils.formatEther(addressBalance));
 
   await balloonsContract.approve(dexOneAddress, ethers.utils.parseEther("1000000"));
   await balloonsContract.approve(dexTwoAddress, ethers.utils.parseEther("1000000"));
