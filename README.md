@@ -64,6 +64,7 @@ From here you're ready to start building your bot!
 When you're ready to deploy uncomment the section to deploy ArbBot in `00_deploy_your_contract.ts` and rerun yarn deploy
 Then in a new terminal run 
 ```
+cd packages/hardhat
 ts-node arbBot.ts
 ```
 And you should be set!
