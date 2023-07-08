@@ -43,7 +43,7 @@ const config: HardhatUserConfig = {
       },
       mining: {
         auto: false,
-        interval: 2000,
+        interval: 4000,
       },
     },
     mainnet: {

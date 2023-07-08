@@ -52,6 +52,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   const dexTwo = await hre.ethers.getContract("DexTwo", deployer);
 
+  // uncomment this when you're ready to deploy your bot
   // await deploy("ArbBot", {
   //   from: deployer,
   //   log: true,

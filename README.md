@@ -43,7 +43,7 @@ yarn chain
 
 This command starts a local Ethereum network using Hardhat. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `hardhat.config.ts`.
 
-3. On a second terminal, deploy the test contract:
+3. On a second terminal, deploy the bases contracts (ERC20, and two dex contracts):
 
 ```
 yarn deploy
@@ -61,3 +61,9 @@ ts-node spoofTxs.ts
 This will start the activity between the dexes, you should see logs in the console of the trades as they're made.
 
 From here you're ready to start building your bot!
+When you're ready to deploy uncomment the section to deploy ArbBot in `00_deploy_your_contract.ts` and rerun yarn deploy
+Then in a new terminal run 
+```
+ts-node arbBot.ts
+```
+And you should be set!

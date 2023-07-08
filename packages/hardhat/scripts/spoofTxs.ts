@@ -110,7 +110,7 @@ async function main() {
     if (x < 100) {
       buildTx();
     }
-  }, 2000);
+  }, 4000);
   x++;
 }
 
