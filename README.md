@@ -1,7 +1,8 @@
-# MEV 101
+# MEV Sandpit 101 ⛱
 
 This repo is a fun challenge to flex your scripting skills to profit from dex arbitrage.
 The repo is made up of a 3 smart contracts & one ethers script built on top of scaffold-eth 2.
+
 ## 3 Smart Contracts
 - A Simple ERC20 Implementation.
 - Two Basic Decentralised exchange contracts that trade the ERC20 token for ETH. These contracts are based on the speedrunethereum MVP Dexes with a slippage protection option added.
