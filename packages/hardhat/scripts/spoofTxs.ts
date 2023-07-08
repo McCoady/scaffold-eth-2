@@ -113,7 +113,7 @@ async function main() {
   // creates 100 txs, 1 every 2 seconds
   let x = 0;
   setInterval(() => {
-    if (x < 100) {
+    if (x < 500) {
       buildTx();
     }
   }, 2000);

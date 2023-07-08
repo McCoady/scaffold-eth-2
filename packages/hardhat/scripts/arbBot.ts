@@ -15,31 +15,39 @@ async function main() {
   }
 
   const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
-  // Get account from private key.
+
+  // set up wallet that will sign transactions for the script
   const wallet = new Wallet(privateKey, provider);
 
-  const balloonsAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-  const dexOneAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
-  const dexTwoAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
-  const arbBotAddress = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9";
+  // get the addresses of our contracts & initialize ethers Contracts
+  const balloonsAddress = balloonsAbi.address;
+  const dexOneAddress = dexOneAbi.address;
+  const dexTwoAddress = dexTwoAbi.address;
 
   const balloonsContract = new ethers.Contract(balloonsAddress, balloonsAbi.abi, wallet);
-
   const dexOneContract = new ethers.Contract(dexOneAddress, dexOneAbi.abi, wallet);
-
   const dexTwoContract = new ethers.Contract(dexTwoAddress, dexTwoAbi.abi, wallet);
 
+  // get address & init contract for our bot contract
+  const arbBotAddress = arbBotAbi.address;
   const arbBotContract = new ethers.Contract(arbBotAddress, arbBotAbi.abi, wallet);
 
+  // log the initial state of bot contract when script starts
   console.log("Eth sent to Arb bot", ethers.utils.formatEther(await arbBotContract.totalEthIn()));
   console.log("Arb bot funds", ethers.utils.formatEther(await provider.getBalance(arbBotAddress)));
+
+  // function that attempts the arbitrage
   async function doArb() {
+    const txSize = "2.5";
     // 1: Keep track of prices of each token
+
+    // calculate dex reserves arguments
     const dexOneEthBalance = await provider.getBalance(dexOneAddress);
     const dexOneTokenBalance = await balloonsContract.balanceOf(dexOneAddress);
     const dexTwoEthBalance = await provider.getBalance(dexTwoAddress);
     const dexTwoTokenBalance = await balloonsContract.balanceOf(dexTwoAddress);
 
+    // call price on the two dex contracts
     const dexOneEthPrice = await dexOneContract.price(
       ethers.utils.parseEther("1"),
       dexOneEthBalance,
@@ -50,18 +58,19 @@ async function main() {
       dexTwoEthBalance,
       dexTwoTokenBalance,
     );
+
+    // log the current prices in the terminal
     console.log(
       `Dex One Price ${ethers.utils.formatEther(dexOneEthPrice)}. Dex Two Price ${ethers.utils.formatEther(
         dexTwoEthPrice,
       )}`,
     );
 
-    const cheapest = dexOneEthPrice > dexTwoEthPrice ? 0 : 1;
-
-    if (cheapest === 0) {
+    // if dex one more expensive than dex two try arb dex two, else try arb dex one
+    if (dexOneEthPrice > dexTwoEthPrice) {
       try {
         await arbBotContract.tryArb(dexTwoAddress, dexOneAddress, {
-          value: ethers.utils.parseEther("2.5"),
+          value: ethers.utils.parseEther(txSize),
           maxPriorityFeePerGas: "2",
         });
         const ethToBot = ethers.utils.formatEther(await arbBotContract.totalEthIn());
@@ -70,15 +79,17 @@ async function main() {
         console.log("---");
       } catch {
         console.log("No arb this block");
+        console.log("---");
       }
     } else {
       try {
         await arbBotContract.tryArb(dexOneAddress, dexTwoAddress, {
-          value: ethers.utils.parseEther("2.5"),
+          value: ethers.utils.parseEther(txSize),
           maxPriorityFeePerGas: "2",
         });
       } catch {
         console.log("No arb this block");
+        console.log("---");
       }
     }
   }
