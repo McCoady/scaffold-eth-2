@@ -21,18 +21,85 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
-  await deploy("YourContract", {
+  // deploy credit token
+  const creditToken = await deploy("CreditToken", {
     from: deployer,
-    // Contract constructor arguments
-    args: [deployer],
+    args: ["Buidl Dollars", "BUIDL", deployer],
     log: true,
-    // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
-    // automatically mining the contract deployment transaction. There is no effect on live networks.
+    autoMine: true,
+  });
+  // deploy wood token
+  const woodToken = await deploy("AssetToken", {
+    from: deployer,
+    args: ["Wood", "WOOD"],
+    log: true,
+    autoMine: true,
+  });
+  // deploy oil token
+  const oilToken = await deploy("AssetToken", {
+    from: deployer,
+    args: ["Oil", "OIL"],
+    log: true,
+    autoMine: true,
+  });
+  // deploy water token
+  const waterToken = await deploy("AssetToken", {
+    from: deployer,
+    args: ["Water", "WTR"],
+    log: true,
+    autoMine: true,
+  });
+  // deploy gold token
+  const goldToken = await deploy("AssetToken", {
+    from: deployer,
+    args: ["Gold", "GLD"],
+    log: true,
+    autoMine: true,
+  });
+  // deploy stone token
+  const stoneToken = await deploy("AssetToken", {
+    from: deployer,
+    args: ["Stone", "STN"],
+    log: true,
     autoMine: true,
   });
 
-  // Get the deployed contract
-  // const yourContract = await hre.ethers.getContract("YourContract", deployer);
+  // deploy dexes
+  // deploy credit-wood dex
+  await deploy("BasicDex", {
+    from: deployer,
+    args: [creditToken.address, woodToken.address],
+    log: true,
+    autoMine: true,
+  });
+  // deploy credit-oil dex
+  await deploy("BasicDex", {
+    from: deployer,
+    args: [creditToken.address, oilToken.address],
+    log: true,
+    autoMine: true,
+  });
+  // deploy credit-water dex
+  await deploy("BasicDex", {
+    from: deployer,
+    args: [creditToken.address, waterToken.address],
+    log: true,
+    autoMine: true,
+  });
+  // deploy credit-gold dex
+ await deploy("BasicDex", {
+    from: deployer,
+    args: [creditToken.address, goldToken.address],
+    log: true,
+    autoMine: true,
+  });
+  // deploy credit-stone dex
+  await deploy("BasicDex", {
+    from: deployer,
+    args: [creditToken.address, stoneToken.address],
+    log: true,
+    autoMine: true,
+  });
 };
 
 export default deployYourContract;
