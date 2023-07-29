@@ -52,11 +52,13 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   const dexTwo = await hre.ethers.getContract("DexTwo", deployer);
 
-  await deploy("ArbBot", {
-    from: deployer,
-    log: true,
-    autoMine: true,
-  });
+  // -- UNCOMMENT THIS WHEN YOUR ARB BOT IS READY TO DEPLOY --
+  
+  // await deploy("ArbBot", {
+  //   from: deployer,
+  //   log: true,
+  //   autoMine: true,
+  // });
 
   console.log("Approving DEX one (" + dexOne.address + ") to take Balloons from main account...");
   // If you are going to the testnet make sure your deployer account has enough ETH
